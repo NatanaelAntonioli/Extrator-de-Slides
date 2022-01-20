@@ -1,106 +1,118 @@
-# Dependências - parte delas precisam ser importadas com o pip
-from skimage.metrics import structural_similarity as compare_ssim
-import traceback
-import cv2
+import os
 import datetime
-import time
+import cv2 as cv
+from skimage.metrics import structural_similarity as compare_ssim
 from PIL import Image
 
-# ----------------------------- Sobre ----------------------------
-# Por enquanto o programa só funciona com vídeos que mostrem apenas slides.
-# Vídeos com a câmera do professor ou com o professor mostrando os slides em uma televisão
-# farão com que um slide seja exportado a cada 10 segundos (na configuração original).
-# No pior dos casos, o programa fará um slide a cada 10 segundos.
-# Aos poucos quero ir deixando ele melhor e fazer com que mais casos sejam cobertos.
 
-# ----------------------------- Variáveis ----------------------------
-# Eu quero obter slides dos primeiros ... minutos do vídeo.
-total_minutos = 46
-# Se um slide é mostrado por menos de ... segundos, então ele não é importante.
-# Slides provavelmente não serão mostrados por menos de ... segundos.
-intervalo_segundos = 10
-# O arquivo de vídeo possui o nome ... (formatos testados: mp4)
-arquivo = "aula.mp4"
+start_time = datetime.datetime.now()
 
-# ----------------------------- Execução ----------------------------
-# Primeiro, ler a captura e abrir os diretórios/vetores
-cap = cv2.VideoCapture(arquivo)
-prints_directory = "fotos"
-diferencas = []
-iteracoes = int(total_minutos * 60 / intervalo_segundos)
+video_file_name = input("Enter the name of the video (with the extension): ")
+video_name = video_file_name.split(".")[0]
 
-skip_next = False
-last_i = -8
+# make a folder with the name of the video
+# if the folder already exists, delete it
 
-start = time.time()
-print("Iniciando a extração...")
-# Para cada iteração, ou seja, a cada pedaço de tantos segundos
-for i in range(iteracoes):
+if os.path.exists(video_name):
+    print("Deleting the folder...")
+    os.system("rm -r " + video_name)  # if you are using Windows, use rmdir instead of rm
 
-    # Carrega o frame. Usa uma técnica meio go-horse.
+if not os.path.exists('./output'):
+    os.makedirs('./output')
 
-    pos = i * 1000 * intervalo_segundos  # define o segundo a ser verificado
-    cap.set(0, pos)
-    ret, frame = cap.read()
-    try:
-        cv2.imwrite("atual.png", frame)
-    except:
-        i = iteracoes + 5000
+os.mkdir(f'./{video_name}')
+os.mkdir(f'./{video_name}/frames')
 
-    # Faz a comparacão do frame atual com o último.
-    # Se a diferença for muito grande, então temos slides diferentes e um novo precisa ser salvo.
+video_path = f'./input/{video_name}'
+frames_path = f'./{video_name}/frames/'
 
-    write = True
+seconds_interval = int(input("Enter the seconds interval: "))
+frames_interval = seconds_interval * 30
 
-    imageA = cv2.imread("atual.png")
-    imageB = cv2.imread("last.png")
+start_frame = int(input("Enter the start frame: "))
 
-    grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
-    grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
+# # # # # # # # #
 
-    (score, diff) = compare_ssim(grayA, grayB, full=True)
-    diff = (diff * 255).astype("uint8")
-    value = format(score)
+capture = cv.VideoCapture(f'./input/{video_file_name}')
+total_frames = int(capture.get(cv.CAP_PROP_FRAME_COUNT))
 
-    diferencas.append(float(value))
-    tam = len(diferencas)
-    try:
-        comp = diferencas[tam - 1] - diferencas[tam - 2]
-        if abs(comp) < 0.05:
-            write = False
-    except Exception:
-        traceback.print_exc()
+end_frame = total_frames - frames_interval
 
-    # Escreve o quadro na pasta.
+prev_frame = None
+diff_threshold = (1 - .05)
 
-    if write and not skip_next:
-        cv2.imwrite("fotos/" + str(i) + ".png", frame)
-        cv2.imwrite("last.png", frame)
-        print("Slide encontrado aos " + str(datetime.timedelta(seconds=i * intervalo_segundos)) + ".")
+width = int(capture.get(cv.CAP_PROP_FRAME_WIDTH))
+height = int(capture.get(cv.CAP_PROP_FRAME_HEIGHT))
 
-        # Isso aqui é necessário para evitar que todos os slides sejam escritos duas vezes.
-        skip_next = True
-        last_i = i
-    if write and skip_next and not last_i == i:
-        skip_next = False
+print(f'Width: {width}')
+print(f'Height: {height}')
 
-# Por fim, produzir o PDF.
-lista_imagens = []
+# if you want to crop the video, enter the coordinates of the top left corner
+# and the bottom right corner of the rectangle
 
-# Isso aqui faz com que a pesquisa ocorra em ordem numérica e não alfabética.
-# Se não, o programa faz algo como 1, 10, 11,...19, 100, 101, ... 199, 2, 20,21,...29,200,201,...299
-for i in range(iteracoes + 5):
-    try:
-        im = Image.open("fotos/" + str(i) + ".png")
-        lista_imagens.append(im)
-    except:
-        pass
+res = input('\nDo you want to crop the video? (y/n) ')
 
-pdf1_filename = "slides.pdf"
-capa = Image.open("capa.png")
+top_left_x = 0
+top_left_y = 0
+bottom_right_x = width
+bottom_right_y = height
 
-capa.save(pdf1_filename, "PDF", resolution=100.0, save_all=True, append_images=lista_imagens)
+if res == 'y':
+    top_left_x = int(input("Enter the top left x coordinate: "))
+    top_left_y = int(input("Enter the top left y coordinate: "))
+    bottom_right_x = int(input("Enter the bottom right x coordinate: "))
+    bottom_right_y = int(input("Enter the bottom right y coordinate: "))
 
-end = time.time()
-tempo = end - start
-print("Extração concluída em " + str(datetime.timedelta(seconds=tempo)) + "!")
+x1, y1, x2, y2 = top_left_x, top_left_y, bottom_right_x, bottom_right_y
+
+print('Extracting frames...')
+
+for i in range(start_frame, end_frame, frames_interval):
+    capture.set(cv.CAP_PROP_POS_FRAMES, i)
+    ret, frame = capture.read()
+
+    if ret:
+        roi = frame[y1:y2, x1:x2]
+
+        if prev_frame is not None:
+            # convert the frames to grayscale
+            gray_prev = cv.cvtColor(prev_frame, cv.COLOR_BGR2GRAY)
+            gray_roi = cv.cvtColor(roi, cv.COLOR_BGR2GRAY)
+
+            # compute the Structural Similarity Index (SSIM) between the two
+            # frames
+            (score, _) = compare_ssim(gray_roi, gray_prev, full=True)
+
+            # if the frames are not similar enough, the program will
+            # capture the frame and save it
+            if score < diff_threshold:
+                cv.imwrite(frames_path + str(i) + '.jpg', roi)
+                # print('Captured frame: ' + str(i))
+
+                prev_frame = roi
+        else:
+            cv.imwrite(frames_path + str(i) + '.jpg', roi)
+            # print('First Frame: ' + str(i) + ' saved')
+
+            prev_frame = roi
+
+
+# write a pdf file with all the images
+images = []
+for file in os.listdir(frames_path):
+    if file.endswith(".jpg"):
+        images.append(Image.open(frames_path + file))
+
+cape = Image.open(f'input/{video_name}_cape.png')
+
+cape.save(
+    './output/' + video_name + '.pdf',
+    'PDF',
+    resolution=100.0,
+    save_all=True,
+    append_images=images
+)
+
+end_time = datetime.datetime.now()
+
+print('Elapsed time: ' + str(end_time - start_time))
