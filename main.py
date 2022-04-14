@@ -15,12 +15,12 @@ from PIL import Image
 
 # ----------------------------- Variáveis ----------------------------
 # Eu quero obter slides dos primeiros ... minutos do vídeo.
-total_minutos = int(input("Qual a duração do vídeo desejado? "))
+total_minutos = int(input("Qual a duração do vídeo desejado? ")) #TODO: Idealmente, isso viria do arquivo em si.
 # Se um slide é mostrado por menos de ... segundos, então ele não é importante.
 # Slides provavelmente não serão mostrados por menos de ... segundos.
 intervalo_segundos = int(input("Quantos segundos um slide tem que durar para ser relevante? "))
 # O arquivo de vídeo possui o nome ... (formatos testados: mp4)
-arquivo = input("Qual o nome do arquivo .mp4 da aula? ")
+arquivo = 'aula.mp4' #input("Qual o nome do arquivo .mp4 da aula? ")  #TODO: Permitir que usuário selecione isso do diretório.
 
 # ----------------------------- Execução ----------------------------
 # Primeiro, ler a captura e abrir os diretórios/vetores
@@ -29,7 +29,7 @@ prints_directory = "fotos"
 diferencas = []
 iteracoes = int(total_minutos * 60 / intervalo_segundos)
 
-skip_next = False
+skip_next = False   
 last_i = -8
 
 start = time.time()
@@ -42,6 +42,11 @@ for i in range(iteracoes):
     pos = i * 1000 * intervalo_segundos  # define o segundo a ser verificado
     cap.set(0, pos)
     ret, frame = cap.read()
+    # if ret: # For debug
+    #     cv2.imshow('frame', frame)
+    #     cv2.waitKey(0)
+    #     cv2.destroyAllWindows()
+    #     print(2)
     try:
         cv2.imwrite("atual.png", frame)
     except:
@@ -53,7 +58,7 @@ for i in range(iteracoes):
     write = True
 
     imageA = cv2.imread("atual.png")
-    imageB = cv2.imread("last.png")
+    imageB = cv2.imread("last.png") # Se não tem last, isso aqui dá merda. Tem que dar resize também.
 
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
@@ -66,7 +71,7 @@ for i in range(iteracoes):
     tam = len(diferencas)
     try:
         comp = diferencas[tam - 1] - diferencas[tam - 2]
-        if abs(comp) < 0.05:
+        if abs(comp) < 0.05 and i != 0:
             write = False
     except Exception:
         traceback.print_exc()
