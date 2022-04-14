@@ -15,12 +15,12 @@ from PIL import Image
 
 # ----------------------------- Variáveis ----------------------------
 # Eu quero obter slides dos primeiros ... minutos do vídeo.
-total_minutos = 46
+total_minutos = int(input("Qual a duração do vídeo desejado? "))
 # Se um slide é mostrado por menos de ... segundos, então ele não é importante.
 # Slides provavelmente não serão mostrados por menos de ... segundos.
-intervalo_segundos = 10
+intervalo_segundos = int(input("Quantos segundos um slide tem que durar para ser relevante? "))
 # O arquivo de vídeo possui o nome ... (formatos testados: mp4)
-arquivo = "aula.mp4"
+arquivo = input("Qual o nome do arquivo .mp4 da aula? ")
 
 # ----------------------------- Execução ----------------------------
 # Primeiro, ler a captura e abrir os diretórios/vetores
