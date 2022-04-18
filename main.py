@@ -5,6 +5,9 @@ import cv2
 import datetime
 import time
 from PIL import Image
+from os.path import exists
+
+
 
 # ----------------------------- Sobre ----------------------------
 # Por enquanto o programa só funciona com vídeos que mostrem apenas slides.
