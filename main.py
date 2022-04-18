@@ -5,7 +5,7 @@ import cv2
 import datetime
 import time
 from PIL import Image
-from os.path import exists
+import os
 
 
 
@@ -28,7 +28,9 @@ arquivo = 'aula.mp4' #input("Qual o nome do arquivo .mp4 da aula? ")  #TODO: Per
 # ----------------------------- Execução ----------------------------
 # Primeiro, ler a captura e abrir os diretórios/vetores
 cap = cv2.VideoCapture(arquivo)
-prints_directory = "fotos"
+prints_directory = f"fotos de {arquivo}"
+if not os.path.exists(prints_directory):  # Se a pasta não existe, cria ela.
+    os.makedirs(prints_directory)
 diferencas = []
 iteracoes = int(total_minutos * 60 / intervalo_segundos)
 
@@ -61,7 +63,7 @@ for i in range(iteracoes):
     write = True
 
     imageA = cv2.imread("atual.png")
-    if not exists('last.png'): # Se for a primeira run, não existe last, e portanto
+    if not os.path.exists('last.png'): # Se for a primeira run, não existe last, e portanto
         imageB = imageA
     else:
         imageB = cv2.imread("last.png") # Se não tem last, isso aqui dá merda. Tem que dar resize também.
@@ -84,7 +86,7 @@ for i in range(iteracoes):
     # Escreve o quadro na pasta.
 
     if write and not skip_next: # Se for pra escrever e NÃO FOR pra pular pra próxima.
-        cv2.imwrite("fotos/" + str(i) + ".png", frame) # Escreve a imagem pra pasta. 
+        cv2.imwrite(f"{prints_directory}/" + str(i) + ".png", frame) # Escreve a imagem pra pasta. 
         cv2.imwrite("last.png", frame) # Salva o frame válido como last. 
         print("Slide encontrado aos " + str(datetime.timedelta(seconds=i * intervalo_segundos)) + ".")
 
@@ -92,7 +94,7 @@ for i in range(iteracoes):
         skip_next = True # Garante que vai pular pra próxima. 
         last_i = i 
     if write and skip_next and not last_i == i:
-        skip_next = False # Aí na próxima iteração, ele reseta. Pra que skip next então?
+        skip_next = False # Aí na próxima iteração, ele reseta. Pra que skip next então? Como isso impede duplicação?
 
 # Por fim, produzir o PDF.
 lista_imagens = []
@@ -101,7 +103,7 @@ lista_imagens = []
 # Se não, o programa faz algo como 1, 10, 11,...19, 100, 101, ... 199, 2, 20,21,...29,200,201,...299
 for i in range(iteracoes + 5):
     try:
-        im = Image.open("fotos/" + str(i) + ".png")
+        im = Image.open(f"{prints_directory}/" + str(i) + ".png")
         lista_imagens.append(im)
     except:
         pass
