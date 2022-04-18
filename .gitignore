@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Images are never welcome.
+
+*.png 
+*.mp4
+
 # Distribution / packaging
 .Python
 build/
