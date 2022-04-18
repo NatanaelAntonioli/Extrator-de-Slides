@@ -61,7 +61,10 @@ for i in range(iteracoes):
     write = True
 
     imageA = cv2.imread("atual.png")
-    imageB = cv2.imread("last.png") # Se não tem last, isso aqui dá merda. Tem que dar resize também.
+    if not exists('last.png'): # Se for a primeira run, não existe last, e portanto
+        imageB = imageA
+    else:
+        imageB = cv2.imread("last.png") # Se não tem last, isso aqui dá merda. Tem que dar resize também.
 
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY) # Transforma imagens em grayscale
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
