@@ -10,7 +10,7 @@ __pycache__/
 
 *.png 
 *.mp4
-
+*.pdf 
 # Distribution / packaging
 .Python
 build/
