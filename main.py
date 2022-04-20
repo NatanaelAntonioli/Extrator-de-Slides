@@ -53,7 +53,7 @@ for i in range(iteracoes):
     #     cv2.destroyAllWindows()
     #     print(2)
     try:
-        cv2.imwrite("atual.png", frame) # Salva o frame atual como atual.png
+        cv2.imwrite(f"{prints_directory}/atual.png", frame) # Salva o frame atual como atual.png
     except:
         i = iteracoes + 5000
 
@@ -62,11 +62,11 @@ for i in range(iteracoes):
 
     write = True
 
-    imageA = cv2.imread("atual.png")
-    if not os.path.exists('last.png'): # Se for a primeira run, não existe last, e portanto
+    imageA = cv2.imread(f"{prints_directory}/atual.png")
+    if not os.path.exists(f"{prints_directory}/last.png"): # Se for a primeira run, não existe last, e portanto
         imageB = imageA
     else:
-        imageB = cv2.imread("last.png") # Se não tem last, isso aqui dá merda. Tem que dar resize também.
+        imageB = cv2.imread(f"{prints_directory}/last.png") #
 
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY) # Transforma imagens em grayscale
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
@@ -87,7 +87,7 @@ for i in range(iteracoes):
 
     if write and not skip_next: # Se for pra escrever e NÃO FOR pra pular pra próxima.
         cv2.imwrite(f"{prints_directory}/" + str(i) + ".png", frame) # Escreve a imagem pra pasta. 
-        cv2.imwrite("last.png", frame) # Salva o frame válido como last. 
+        cv2.imwrite(f"{prints_directory}/last.png", frame) # Salva o frame válido como last. 
         print("Slide encontrado aos " + str(datetime.timedelta(seconds=i * intervalo_segundos)) + ".")
 
         # Isso aqui é necessário para evitar que todos os slides sejam escritos duas vezes.
