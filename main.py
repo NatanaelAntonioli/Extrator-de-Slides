@@ -6,7 +6,7 @@ import datetime
 import time
 from PIL import Image
 import os
-
+from helper_functions import *
 
 
 # ----------------------------- Sobre ----------------------------
@@ -24,11 +24,11 @@ total_minutos = int(input("Qual a duração do vídeo desejado? ")) #TODO: Ideal
 intervalo_segundos = int(input("Quantos segundos um slide tem que durar para ser relevante? "))
 # O arquivo de vídeo possui o nome ... (formatos testados: mp4)
 arquivo = 'aula.mp4' #input("Qual o nome do arquivo .mp4 da aula? ")  #TODO: Permitir que usuário selecione isso do diretório.
-
+# Arquivo VA17.mp4 gera erros. 
 # ----------------------------- Execução ----------------------------
 # Primeiro, ler a captura e abrir os diretórios/vetores
 cap = cv2.VideoCapture(arquivo)
-prints_directory = f"fotos de {arquivo}"
+prints_directory = f"slides de {arquivo}"
 if not os.path.exists(prints_directory):  # Se a pasta não existe, cria ela.
     os.makedirs(prints_directory)
 diferencas = []
@@ -96,23 +96,7 @@ for i in range(iteracoes):
     if write and skip_next and not last_i == i:
         skip_next = False # Aí na próxima iteração, ele reseta. Pra que skip next então? Como isso impede duplicação?
 
-# Por fim, produzir o PDF.
-lista_imagens = []
-
-# Isso aqui faz com que a pesquisa ocorra em ordem numérica e não alfabética.
-# Se não, o programa faz algo como 1, 10, 11,...19, 100, 101, ... 199, 2, 20,21,...29,200,201,...299
-for i in range(iteracoes + 5):
-    try:
-        im = Image.open(f"{prints_directory}/" + str(i) + ".png")
-        lista_imagens.append(im)
-    except:
-        pass
-
-pdf1_filename = "slides.pdf"
-capa = Image.open("capa.png")
-
-capa.save(pdf1_filename, "PDF", resolution=100.0, save_all=True, append_images=lista_imagens)
-
+pdf_generation(iteracoes, prints_directory)
 end = time.time()
 tempo = end - start
 print("Extração concluída em " + str(datetime.timedelta(seconds=tempo)) + "!")
