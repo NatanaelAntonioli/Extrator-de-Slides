@@ -18,17 +18,24 @@ from helper_functions import *
 
 # ----------------------------- Variáveis ----------------------------
 # Eu quero obter slides dos primeiros ... minutos do vídeo.
-total_minutos = int(input("Qual a duração do vídeo desejado? ")) #TODO: Idealmente, isso viria do arquivo em si.
+
 # Se um slide é mostrado por menos de ... segundos, então ele não é importante.
 # Slides provavelmente não serão mostrados por menos de ... segundos.
 intervalo_segundos = int(input("Quantos segundos um slide tem que durar para ser relevante? "))
 # O arquivo de vídeo possui o nome ... (formatos testados: mp4)
 arquivo = 'aula.mp4' #input("Qual o nome do arquivo .mp4 da aula? ")  #TODO: Permitir que usuário selecione isso do diretório.
+
 # Arquivo VA17.mp4 gera erros. 
 # ----------------------------- Execução ----------------------------
 # Primeiro, ler a captura e abrir os diretórios/vetores
 cap = cv2.VideoCapture(arquivo)
-prints_directory = f"slides de {arquivo}"
+# Extrai tamanho aproximado do vídeo. 
+fps = cap.get(cv2.CAP_PROP_FPS)      # OpenCV2 version 2 used "CV_CAP_PROP_FPS"
+frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+duration = frame_count/fps
+
+total_minutos = int(duration / 60) + 1 # Pega a duração em segundos, dá um minutinho a mais.
+prints_directory = f"slides da {arquivo}"
 if not os.path.exists(prints_directory):  # Se a pasta não existe, cria ela.
     os.makedirs(prints_directory)
 diferencas = []
