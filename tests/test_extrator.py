@@ -1,0 +1,1 @@
+from ExtratorSlides.ExtratordeSlides import * # Isso ainda não funciona até que o seu pacote seja lido como instalável. 
