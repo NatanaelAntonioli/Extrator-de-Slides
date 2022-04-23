@@ -23,7 +23,7 @@ from helper_functions import *
 # Slides provavelmente não serão mostrados por menos de ... segundos.
 intervalo_segundos = int(input("Quantos segundos um slide tem que durar para ser relevante? "))
 # O arquivo de vídeo possui o nome ... (formatos testados: mp4)
-arquivo = 'aula.mp4' #input("Qual o nome do arquivo .mp4 da aula? ")  #TODO: Permitir que usuário selecione isso do diretório.
+arquivo = 'VA17.mp4' #input("Qual o nome do arquivo .mp4 da aula? ")  #TODO: Permitir que usuário selecione isso do diretório.
 
 # Arquivo VA17.mp4 gera erros. 
 # ----------------------------- Execução ----------------------------
