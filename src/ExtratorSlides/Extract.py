@@ -12,7 +12,7 @@ def image_comparison(imageA, imageB, threshold = 0.05) -> bool:
     # Greyscale the images:
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY) 
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
-    score = compare_ssim(grayA, grayB) 
+    score: float = compare_ssim(grayA, grayB) 
     return abs(score) < threshold
 
 
