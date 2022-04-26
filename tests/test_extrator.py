@@ -5,11 +5,11 @@ from ExtratorSlides.SlideExtractor import *
 import pytest
 from tkinter import filedialog as fd
 
-def return_non_video_file(prompt = None):
+def return_non_video_file(title = None):
     return 'texto.txt'
 
 
-def return_proper_video_file(prompt = None):
+def return_proper_video_file(title = None):
     return 'aula.mp4'
 
 
@@ -32,11 +32,11 @@ class TestInput:
 class TestOpenVideoFile:
     
     def test_if_not_video(self, monkeypatch):
-        monkeypatch.setattr(fd, 'askopenfilename', return_non_video_file)
+        monkeypatch.setattr(fd, 'askopenfilename',  return_non_video_file)
         with pytest.raises(ValueError, match = "O programa apenas suporta arquivos de vídeo. Escolha um arquivo de vídeo.") as err:
             open_video()
     
     def test_valid_video(self, monkeypatch):
-        monkeypatch.setattr(fd, 'askopenfilename', return_proper_video_file)
+        monkeypatch.setattr(fd, 'askopenfilename',  return_proper_video_file)
         assert open_video() == return_proper_video_file()
     
