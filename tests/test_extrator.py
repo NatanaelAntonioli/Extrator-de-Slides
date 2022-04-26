@@ -5,11 +5,11 @@ from ExtratorSlides.SlideExtractor import *
 import pytest
 from tkinter import filedialog as fd
 
-def return_non_video_file():
+def return_non_video_file(prompt = None):
     return 'texto.txt'
 
 
-def return_proper_video_file():
+def return_proper_video_file(prompt = None):
     return 'aula.mp4'
 
 

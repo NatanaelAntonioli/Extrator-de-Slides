@@ -12,8 +12,9 @@ def receive_input():
         raise ValueError("Valor inválido. Segundos são um número inteiro maior que 0.")
     return seconds 
 
+
 def open_video():
-    filename = fd.askopenfilename()
+    filename = fd.askopenfilename('Escolha um arquivo de vídeo.')
     if not mimetypes.guess_type(filename)[0].startswith('video'): # Verifica se é um arquivo de vídeo válido
         raise ValueError("O programa apenas suporta arquivos de vídeo. Escolha um arquivo de vídeo.")
     return filename
