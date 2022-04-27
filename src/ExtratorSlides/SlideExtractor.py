@@ -43,17 +43,36 @@ def calculate_length_video(video: cv2.VideoCapture) -> int:
         video (cv2.VideoCapture): Video file previously chosen by user.
 
     Returns:
-        int: Duration of the video in minutes, with more or less a minute of leeway.
+        int: Duration of the video in seconds, with an addedd minute to compensate for approximation errors in cv2.
     """
     fps = video.get(cv2.CAP_PROP_FPS)      #
     frame_count = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
-    duration = frame_count / fps
-    minutes = int(duration / 60) + 1 # Divide the duration in seconds to get minutes, add +1 for margin. 
-    return minutes 
+    duration =  int(60 + (frame_count / fps))
+    return duration 
+
+
+def calculate_iterations(video_length: int, seconds: int) -> int:
+    """Calculate the number of loops to be used in the processing of the video. 
+
+    Args:
+        video_length (int): Size of video in seconds, calculated in calculate_length_video().
+        seconds (int): Nunber of seconds, received as input in receive_input().
+
+    Raises:
+        ValueError: If the quantity of seconds is superior to the length of the video in itself.
+
+    Returns:
+        int: Returns the number of times the processing and comparing of frames will be done. 
+    """
+    if video_length < seconds:
+        raise ValueError(f"Você escolheu {seconds} para um slide ser relevante, mas o vídeo dura menos {video_length} segundos")
+    return (video_length // seconds) + 1 
+
 
 def process_video() -> bool:
     seconds = receive_input()
     video_file = choose_video()
     capture = cv2.VideoCapture(video_file)
-    ret, frame = capture.read() 
+    video_length = calculate_length_video(capture)
+
     pass
