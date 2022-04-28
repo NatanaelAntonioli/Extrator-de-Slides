@@ -43,12 +43,12 @@ class TestProcessVideo:
     @pytest.mark.skip(reason="This feature shouldn't be tested yet.")
     def test_video_opens(self, file_dialog_mock, proper_input): 
 
-        assert process_video() is True 
+        assert process_video() == True 
     
     def test_can_calculate_video_size(self, file_dialog_mock):
         cap = cv2.VideoCapture(choose_video())
         r = calculate_length_video(cap)
-        assert r == 1258 
+        assert r == 1198
     
     def test_no_possible_iterations(self, monkeypatch, file_dialog_mock):
         monkeypatch.setattr('builtins.input', lambda _: "2000")
@@ -62,6 +62,13 @@ class TestProcessVideo:
         seconds = receive_input()
         cap = cv2.VideoCapture(choose_video())
         video_length = calculate_length_video(cap)
-        assert calculate_iterations(video_length, seconds) == 126
+        assert calculate_iterations(video_length, seconds) == 120
 
-    
+    def test_can_distinguish_images(self, file_dialog_mock, proper_input):
+        cap = cv2.VideoCapture(choose_video())
+        _, imageA = cap.read() # First frame of video 
+        video_length = calculate_length_video(cap)
+        # 0 is the enum for position in MSEC
+        cap.set(0, video_length * 1000)  # To get last frame, video_length in seconds converted to MS.
+        _, imageB = cap.read()
+        assert image_comparison(imageA, imageB) == True 
