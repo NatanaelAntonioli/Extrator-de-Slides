@@ -33,8 +33,10 @@ def choose_video() -> str:
     Returns:
         str: The full path to the file chosen by the user.
     """
-    filename = fd.askopenfilename(title= 'Escolha um arquivo de vídeo.')
-    if not mimetypes.guess_type(filename)[0].startswith('video'): # Verifica se é um arquivo de vídeo válido
+    filename: str = fd.askopenfilename(title= 'Escolha um arquivo de vídeo.')
+    #mypy can't see the library where this is properly defined
+    # Verifies for valid video file
+    if not mimetypes.guess_type(filename)[0].startswith('video'): # type: ignore[union-attr]
         raise ValueError("O programa apenas suporta arquivos de vídeo. Escolha um arquivo de vídeo.")
     return filename
 
