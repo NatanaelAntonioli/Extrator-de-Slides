@@ -64,7 +64,7 @@ class TestProcessVideo:
         video_length = calculate_length_video(cap)
         assert calculate_iterations(video_length, seconds) == 120
 
-    def test_can_distinguish_images(self, file_dialog_mock, proper_input):
+    def test_can_distinguish_images(self, file_dialog_mock):
         cap = cv2.VideoCapture(choose_video())
         _, imageA = cap.read() # First frame of video 
         video_length = calculate_length_video(cap)
@@ -72,3 +72,13 @@ class TestProcessVideo:
         cap.set(0, video_length * 1000)  # To get last frame, video_length in seconds converted to MS.
         _, imageB = cap.read()
         assert image_comparison(imageA, imageB) == True 
+
+    def test_image_comparison_invalid_threshold(self, file_dialog_mock):
+        cap = cv2.VideoCapture(choose_video())
+        _, imageA = cap.read()
+        video_length = calculate_length_video(cap)
+        with pytest.raises(ValueError, match = "A tolerância para similaridade tem que ser um número positivo entre 0 e 1.") as err:
+            image_comparison(imageA, imageA, threshold = 10)
+        with pytest.raises(ValueError, match = "A tolerância para similaridade tem que ser um número positivo entre 0 e 1.") as err:
+            image_comparison(imageA, imageA, threshold= -1)
+        

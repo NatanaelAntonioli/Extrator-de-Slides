@@ -1,5 +1,6 @@
 # Rewriting code for simplicity's sake. 
 import mimetypes
+from multiprocessing.sharedctypes import Value
 from tkinter import filedialog as fd
 import cv2 
 from skimage.metrics import structural_similarity
@@ -69,6 +70,7 @@ def calculate_iterations(video_length: int, seconds: int) -> int:
         raise ValueError(f"Você escolheu {seconds} para um slide ser relevante, mas o vídeo dura menos {video_length} segundos")
     return (video_length // seconds) + 1 
 
+
 def image_comparison(imageA: cv2.VideoCapture, imageB: cv2.VideoCapture, threshold: float = 0.9) -> bool:
     """Compares video frames by greyscaling them and then applying the structural similarity algorithm.
 
@@ -76,11 +78,17 @@ def image_comparison(imageA: cv2.VideoCapture, imageB: cv2.VideoCapture, thresho
     Args:
         imageA (cv2.VideoCapture): First frame for comparison
         imageB (cv2.VideoCapture): Second frame for comparison
-        threshold (float, optional): Threshold for defining that images are different. Defaults to 0.9.
+        threshold (float, optional): Minimal score to define that images are different. Defaults to 0.9.
+    
+    Raises:
+        ValueError: If the threshold is outside the range of (0,1). If minimal score is 1, even the same image is different from itself.
+        If the minimal score is 0, no image is different enough.
 
     Returns:
         bool: Returns True if the images are considered to be different.
     """
+    if threshold >= 1 or threshold <= 0:
+        raise ValueError("A tolerância para similaridade tem que ser um número positivo entre 0 e 1.")
     grayA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY) 
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
     score: float = structural_similarity(grayA, grayB) # The closer to 1 in absolute, the more similar they are. 0.9 is my arbitrary threshold.
