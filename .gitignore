@@ -11,6 +11,8 @@ __pycache__/
 *.png 
 *.mp4
 *.pdf 
+# Exceptions for testing:
+!aula.mp4
 # Distribution / packaging
 .Python
 build/
