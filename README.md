@@ -1,4 +1,5 @@
 
+ [![Tests](https://github.com/tamireinhorn/Extrator-de-Slides/actions/workflows/tests.yaml/badge.svg?branch=dev)](https://github.com/tamireinhorn/Extrator-de-Slides/actions/workflows/tests.yaml)
  ## O que esse programa faz? ##
 Eu simplesmente não consigo aproveitar aulas *online* (e nem a maioria das presenciais), portanto estudo com slides e livros. Porém, nem todo professor disponibiliza os slides.
 
