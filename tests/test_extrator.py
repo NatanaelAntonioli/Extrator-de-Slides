@@ -46,6 +46,7 @@ class TestProcessVideo:
 
     def test_can_calculate_video_size(self, file_dialog_mock):
         cap = cv2.VideoCapture(choose_video())
+        
         r = calculate_length_video(cap)
         assert r == 1198
 

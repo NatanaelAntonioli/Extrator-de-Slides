@@ -13,6 +13,7 @@ __pycache__/
 *.pdf 
 # Exceptions for testing:
 !aula.mp4
+!texto.txt
 # Distribution / packaging
 .Python
 build/
