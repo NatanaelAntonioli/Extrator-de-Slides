@@ -3,7 +3,7 @@ import mimetypes
 from tkinter import filedialog as fd
 import cv2
 from skimage.metrics import structural_similarity
-
+import os 
 
 def receive_input() -> int:
     """Asks the user for the minimal time, in seconds, that makes a slide relevant. Only accepts positive numbers.
@@ -34,6 +34,8 @@ def choose_video() -> str:
         str: The full path to the file chosen by the user.
     """
     filename: str = fd.askopenfilename(title= 'Escolha um arquivo de vídeo.')  # noqa: E251
+    if not os.path.exists(filename):
+        raise ValueError('The file does not exist')
     # mypy can't see the library where this is properly defined
     # Verifies for valid video file
     if not mimetypes.guess_type(filename)[0].startswith('video'):  # type: ignore[union-attr]
