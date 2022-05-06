@@ -1,8 +1,10 @@
-from ExtratorSlides.SlideExtractor import image_comparison, receive_input, choose_video, calculate_iterations, calculate_length_video
+from ExtratorSlides.SlideExtractor import (image_comparison, receive_input, choose_video, calculate_iterations, 
+    calculate_length_video, create_folder)
 import pytest
 import cv2
 from tkinter import filedialog as fd
-
+import os
+from pathlib import Path
 
 def return_non_video_file(title = None):
     return 'texto.txt'
@@ -55,7 +57,7 @@ class TestProcessVideo:
         seconds = receive_input()
         cap = cv2.VideoCapture(choose_video())
         video_length = calculate_length_video(cap)
-        with pytest.raises(ValueError, match = f"Você escolheu {seconds} para um slide ser relevante, mas o vídeo dura menos {video_length} segundos"):
+        with pytest.raises(ValueError, match = f"Você escolheu {seconds} segundos para um slide ser relevante, mas o vídeo dura só {video_length} segundos"):
             calculate_iterations(video_length, seconds)
 
     def test_can_properly_calculate_iterations(self, file_dialog_mock, proper_input):
@@ -80,3 +82,22 @@ class TestProcessVideo:
             image_comparison(imageA, imageA, threshold = 10)
         with pytest.raises(ValueError, match = "A tolerância para similaridade tem que ser um número positivo entre 0 e 1."):
             image_comparison(imageA, imageA, threshold = -1)
+
+class TestFolderCreation:
+    """This class of tests seeks to verify whether we can properly create the folder named after the file in the user's directory where the .py file is.
+    """
+    def test_create_new_folder(self, file_dialog_mock, folder_cleanup):
+        video = choose_video()
+        P = Path(video)
+        prints_directory_name = f"Slides de {P.stem}"
+        create_folder(video)
+        assert os.path.exists(prints_directory_name) == True 
+    
+    def test_create_new_folder_with_absolute_path(self, file_dialog_mock, folder_cleanup):
+        current_dir = os.getcwd()
+        video = choose_video()
+        P = Path(video)
+        prints_directory_name = f"Slides de {P.stem}"
+        absolute_path_video = f"{current_dir}/{video}"
+        create_folder(absolute_path_video)
+        assert os.path.exists(prints_directory_name) == True 

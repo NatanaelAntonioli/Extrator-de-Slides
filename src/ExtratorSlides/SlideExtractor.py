@@ -1,8 +1,10 @@
 # Rewriting code for simplicity's sake.
 import mimetypes
+from pathlib import Path
 from tkinter import filedialog as fd
 import cv2
 from skimage.metrics import structural_similarity
+import os
 
 
 def receive_input() -> int:
@@ -70,7 +72,7 @@ def calculate_iterations(video_length: int, seconds: int) -> int:
         int: Returns the number of times the processing and comparing of frames will be done.
     """
     if video_length < seconds:
-        raise ValueError(f"Você escolheu {seconds} para um slide ser relevante, mas o vídeo dura menos {video_length} segundos")
+        raise ValueError(f"Você escolheu {seconds} segundos para um slide ser relevante, mas o vídeo dura só {video_length} segundos")
     return (video_length // seconds) + 1
 
 
@@ -96,3 +98,14 @@ def image_comparison(imageA: cv2.VideoCapture, imageB: cv2.VideoCapture, thresho
     grayB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
     score: float = structural_similarity(grayA, grayB)  # The closer to 1 in absolute, the more similar they are. 0.9 is my arbitrary threshold.
     return abs(score) < threshold  # If the similarity is not that close to 1, they're different.
+
+
+def create_folder(filename: str) -> None:
+    """This simply extracts the pure name of the video file and creates a folder for it's slides and PDF.
+
+    Args:
+        filename (str): Path to the video file.
+    """
+    video_path = Path(filename)
+    prints_directory_name = f"Slides de {video_path.stem}"
+    os.makedirs(prints_directory_name)
