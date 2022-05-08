@@ -41,11 +41,7 @@ class TestOpenVideoFile:
         assert choose_video() == return_proper_video_file()
 
 
-class TestProcessVideo:
-    @pytest.mark.skip(reason="This feature shouldn't be tested yet.")
-    def test_video_opens(self, file_dialog_mock, proper_input):
-        assert process_video() == True
-
+class TestVideoLengthFunction: 
     def test_can_calculate_video_size(self, file_dialog_mock):
         cap = cv2.VideoCapture(choose_video())
 
@@ -65,6 +61,12 @@ class TestProcessVideo:
         cap = cv2.VideoCapture(choose_video())
         video_length = calculate_length_video(cap)
         assert calculate_iterations(video_length, seconds) == 120
+
+
+class TestProcessVideo: 
+    @pytest.mark.skip(reason="This feature shouldn't be tested yet.")
+    def test_video_opens(self, file_dialog_mock, proper_input):
+        assert process_video() == True
 
     def test_can_distinguish_images(self, file_dialog_mock):
         cap = cv2.VideoCapture(choose_video())
@@ -101,3 +103,7 @@ class TestFolderCreation:
         absolute_path_video = f"{current_dir}/{video}"
         create_folder(absolute_path_video)
         assert os.path.exists(prints_directory_name) == True 
+
+class TestPDFGeneration:
+    pass 
+
