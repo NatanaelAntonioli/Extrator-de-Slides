@@ -63,7 +63,7 @@ class TestVideoLengthFunction:
         assert calculate_iterations(video_length, seconds) == 120
 
 
-class TestProcessVideo: 
+class TestImageComparison: 
     @pytest.mark.skip(reason="This feature shouldn't be tested yet.")
     def test_video_opens(self, file_dialog_mock, proper_input):
         assert process_video() == True
@@ -103,6 +103,14 @@ class TestFolderCreation:
         absolute_path_video = f"{current_dir}/{video}"
         create_folder(absolute_path_video)
         assert os.path.exists(prints_directory_name) == True 
+
+
+class TestVideoProcessing:
+    @pytest.mark.skip(reason= "Didn't finish writing it")
+    def can_read_video(self, file_dialog_mock, folder_cleanup):
+        video = choose_video()
+        create_folder(video)
+
 
 class TestPDFGeneration:
     pass 
