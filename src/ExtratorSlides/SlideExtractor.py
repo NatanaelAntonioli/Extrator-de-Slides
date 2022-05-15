@@ -1,10 +1,12 @@
 # Rewriting code for simplicity's sake.
+import datetime
 import mimetypes
 from pathlib import Path
 from tkinter import filedialog as fd
 import cv2
 from skimage.metrics import structural_similarity
 import os
+from PIL import Image
 
 
 def receive_input() -> int:
@@ -63,7 +65,7 @@ def calculate_iterations(video_length: int, seconds: int) -> int:
 
     Args:
         video_length (int): Size of video in seconds, calculated in calculate_length_video().
-        seconds (int): Nunber of seconds, received as input in receive_input().
+        seconds (int): Number of seconds, received as input in receive_input().
 
     Raises:
         ValueError: If the quantity of seconds is superior to the length of the video in itself.
@@ -100,18 +102,51 @@ def image_comparison(imageA: cv2.VideoCapture, imageB: cv2.VideoCapture, thresho
     return abs(score) < threshold  # If the similarity is not that close to 1, they're different.
 
 
-def create_folder(filename: str) -> None:
+def create_folder(filename: str) -> str:
     """This simply extracts the pure name of the video file and creates a folder for it's slides and PDF.
 
     Args:
         filename (str): Path to the video file.
+
+    Returns:
+        str: Returns the folder's name, just for simplicity's sake.
     """
     video_path = Path(filename)
     prints_directory_name = f"Slides de {video_path.stem}"
     os.makedirs(prints_directory_name)
+    return prints_directory_name
 
 
-def process_video(video: cv2.VideoCapture, iterations: int, folder: str):
+def process_video(video: cv2.VideoCapture, iterations: int, folder: str, seconds: int):
     _, frame = video.read()
     cv2.imwrite(f'{folder}/current_image.png', frame)
+    image_list = []
+    for iteration in range(iterations):
+        position = 1000 * iteration * seconds
+        video.set(0, position)
+        _, frame = video.read()
+        cv2.imwrite(f'{folder}/next_image.png', frame)
+        imageA = cv2.imread(f'{folder}/current_image.png')
+        imageB = cv2.imread(f'{folder}/next_image.png')
+        if image_comparison(imageA, imageB):
+            cv2.imwrite(f'{folder}/current_image.png', frame)
+            cv2.imwrite(f'{folder}/{iteration}.png', frame)
+            print(f"Slide encontrado aos {str(datetime.timedelta(seconds= iteration * seconds))}.")
+            image_list.append(Image.open(f"{folder}/{iteration}.png"))
+    capa = image_list[0]
+    capa.save(f'{folder}/slides.pdf', "PDF", resolution=100.0, save_all=True, append_images=image_list)
 
+
+def main():
+    seconds = receive_input()
+    video = choose_video()
+    video_capture = cv2.VideoCapture(video)
+    video_length = calculate_length_video(video_capture)
+    iterations = calculate_iterations(video_length, seconds)
+    folder = create_folder(video)
+    process_video(video_capture, iterations, folder, seconds)
+    print('Extração concluída!')
+
+
+if __name__ == '__main__':
+    main()

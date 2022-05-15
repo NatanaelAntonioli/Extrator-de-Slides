@@ -1,5 +1,5 @@
 from ExtratorSlides.SlideExtractor import (image_comparison, receive_input, choose_video, calculate_iterations, 
-    calculate_length_video, create_folder, process_video)
+    calculate_length_video, create_folder, process_video, main)
 import pytest
 import cv2
 from tkinter import filedialog as fd
@@ -102,7 +102,7 @@ class TestFolderCreation:
 
 
 class TestVideoProcessing:
-    def test_save_first_frame(self, file_dialog_mock, folder_cleanup, proper_input):
+    def test_save_first_frame(self, file_dialog_mock, proper_input, folder_cleanup):
         video = choose_video()
         cap = cv2.VideoCapture(video)
         video_length = calculate_length_video(cap)
@@ -111,11 +111,47 @@ class TestVideoProcessing:
         create_folder(video)
         P = Path(video)
         prints_directory_name = f"Slides de {P.stem}"
-        process_video(cap, iterations, prints_directory_name)
+        process_video(cap, iterations, prints_directory_name, seconds)
         assert os.path.exists(f"{prints_directory_name}/current_image.png")
 
+    def test_save_next_frame(self, file_dialog_mock, proper_input, folder_cleanup):
+        video = choose_video()
+        cap = cv2.VideoCapture(video)
+        video_length = calculate_length_video(cap)
+        seconds = receive_input()
+        iterations = calculate_iterations(video_length=video_length, seconds= seconds)
+        create_folder(video)
+        P = Path(video)
+        prints_directory_name = f"Slides de {P.stem}"
+        process_video(cap, iterations, prints_directory_name, seconds)
+        assert os.path.exists(f"{prints_directory_name}/next_image.png")
 
+    def test_processed_video(self, file_dialog_mock, proper_input, folder_cleanup):
+        video = choose_video()
+        cap = cv2.VideoCapture(video)
+        video_length = calculate_length_video(cap)
+        seconds = receive_input()
+        iterations = calculate_iterations(video_length=video_length, seconds= seconds)
+        create_folder(video)
+        P = Path(video)
+        prints_directory_name = f"Slides de {P.stem}"
+        process_video(cap, iterations, prints_directory_name, seconds)
+        assert os.path.exists(f"{prints_directory_name}/119.png")
 
-class TestPDFGeneration:
-    pass 
+    def test_processed_video(self, file_dialog_mock, proper_input, folder_cleanup):
+        video = choose_video()
+        cap = cv2.VideoCapture(video)
+        video_length = calculate_length_video(cap)
+        seconds = receive_input()
+        iterations = calculate_iterations(video_length=video_length, seconds= seconds)
+        create_folder(video)
+        P = Path(video)
+        prints_directory_name = f"Slides de {P.stem}"
+        process_video(cap, iterations, prints_directory_name, seconds)
+        assert os.path.exists(f"{prints_directory_name}/slides.pdf")
 
+class TestIntegration:
+    
+    def test_all(self, file_dialog_mock, proper_input, folder_cleanup):
+        main()
+        assert os.path.exists(f"Slides de aula/slides.pdf")

@@ -119,7 +119,7 @@ def main_func():
 
         # Escreve o quadro na pasta.
 
-        if write and not skip_next: # Se for pra escrever e NÃO FOR pra pular pra próxima.
+        if write and not skip_next: # Se for pra escrever e NÃO FOR pra pular pra próxima. 
             cv2.imwrite(f"{prints_directory}/" + str(i) + ".png", frame) # Escreve a imagem pra pasta. 
             cv2.imwrite(f"{prints_directory}/last.png", frame) # Salva o frame válido como last. 
             print("Slide encontrado aos " + str(datetime.timedelta(seconds=i * intervalo_segundos)) + ".")
