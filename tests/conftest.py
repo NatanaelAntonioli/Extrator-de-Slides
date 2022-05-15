@@ -1,7 +1,7 @@
 import pytest
 from tkinter import filedialog as fd
 import os 
-
+import shutil
 
 def return_proper_video_file(title = None):
     return 'aula.mp4'
@@ -9,7 +9,7 @@ def return_proper_video_file(title = None):
 
 def teardown_folder():
     directory = "Slides de aula"
-    os.rmdir(directory)
+    shutil.rmtree(directory, ignore_errors= True)
 
 
 @pytest.fixture
