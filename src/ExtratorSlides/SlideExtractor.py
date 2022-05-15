@@ -109,3 +109,9 @@ def create_folder(filename: str) -> None:
     video_path = Path(filename)
     prints_directory_name = f"Slides de {video_path.stem}"
     os.makedirs(prints_directory_name)
+
+
+def process_video(video: cv2.VideoCapture, iterations: int, folder: str):
+    _, frame = video.read()
+    cv2.imwrite(f'{folder}/current_image.png', frame)
+

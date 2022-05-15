@@ -1,5 +1,5 @@
 from ExtratorSlides.SlideExtractor import (image_comparison, receive_input, choose_video, calculate_iterations, 
-    calculate_length_video, create_folder)
+    calculate_length_video, create_folder, process_video)
 import pytest
 import cv2
 from tkinter import filedialog as fd
@@ -44,7 +44,6 @@ class TestOpenVideoFile:
 class TestVideoLengthFunction: 
     def test_can_calculate_video_size(self, file_dialog_mock):
         cap = cv2.VideoCapture(choose_video())
-
         r = calculate_length_video(cap)
         assert r == 1198
 
@@ -64,9 +63,6 @@ class TestVideoLengthFunction:
 
 
 class TestImageComparison: 
-    @pytest.mark.skip(reason="This feature shouldn't be tested yet.")
-    def test_video_opens(self, file_dialog_mock, proper_input):
-        assert process_video() == True
 
     def test_can_distinguish_images(self, file_dialog_mock):
         cap = cv2.VideoCapture(choose_video())
@@ -106,10 +102,18 @@ class TestFolderCreation:
 
 
 class TestVideoProcessing:
-    @pytest.mark.skip(reason= "Didn't finish writing it")
-    def can_read_video(self, file_dialog_mock, folder_cleanup):
+    def test_save_first_frame(self, file_dialog_mock, folder_cleanup, proper_input):
         video = choose_video()
+        cap = cv2.VideoCapture(video)
+        video_length = calculate_length_video(cap)
+        seconds = receive_input()
+        iterations = calculate_iterations(video_length=video_length, seconds= seconds)
         create_folder(video)
+        P = Path(video)
+        prints_directory_name = f"Slides de {P.stem}"
+        process_video(cap, iterations, prints_directory_name)
+        assert os.path.exists(f"{prints_directory_name}/current_image.png")
+
 
 
 class TestPDFGeneration:
