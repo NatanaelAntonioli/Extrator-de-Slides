@@ -118,6 +118,14 @@ def create_folder(filename: str) -> str:
 
 
 def process_video(video: cv2.VideoCapture, iterations: int, folder: str, seconds: int):
+    """This is the bulk of the program. It will process the video, taking the different images and assembling them in a PDF.
+
+    Args:
+        video (cv2.VideoCapture): Video file previously chosen by user.
+        iterations (int): Number of iterations, previously calculated by the program given the user's parameters.
+        folder (str): Folder where the files will be saved, previously created by other function and using the video file's name.
+        seconds (int): Number of seconds a slide has to last to be relevant, previously inputted by user.
+    """
     _, frame = video.read()
     cv2.imwrite(f'{folder}/current_image.png', frame)
     image_list = []
@@ -138,6 +146,8 @@ def process_video(video: cv2.VideoCapture, iterations: int, folder: str, seconds
 
 
 def main():
+    """This is the main function, which will perform all the steps necessary for the extraction.
+    """
     seconds = receive_input()
     video = choose_video()
     video_capture = cv2.VideoCapture(video)
