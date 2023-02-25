@@ -12,8 +12,8 @@ def typing(session):
     session.install('mypy')
     session.run('mypy', 'src/ExtratorSlides/SlideExtractor.py')
 
-# @nox.session
+@nox.session
 
-# def tests(session):
-#     session.run('poetry', 'install', external = True)
-#     session.run('pytest')
+def tests(session):
+    session.run('poetry', 'install', external = True)
+    session.run('pytest')
