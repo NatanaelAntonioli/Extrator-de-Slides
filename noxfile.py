@@ -15,5 +15,7 @@ def typing(session):
 @nox.session
 
 def tests(session):
+    # Nox calls for poetry before anything else.
     session.run('poetry', 'install', external = True)
+    # Nox calls the usual command for testing.
     session.run('pytest')
