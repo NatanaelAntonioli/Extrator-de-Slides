@@ -26,10 +26,10 @@ no_implicit_reexport = true
 
 
 [tool.poetry]
-name = "SlideExtractor"
+name = "ExtratorSlides"
 version = "0.1.0"
 description = "O programa busca extrair, a partir de um arquivo de vídeo de uma video aula, os slides desta em formato `.pdf` para que o usuário possa tê-los mesmo que o professor não os mande."
-authors = ["tamtamireinhorn@gmail.com"]
+authors = ["Tamir Einhorn Salem <tamtamireinhorn@gmail.com>"]
 
 
 [tool.poetry.dependencies]
