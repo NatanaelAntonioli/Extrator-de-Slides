@@ -11,3 +11,9 @@ def lint(session):
 def typing(session):
     session.install('mypy')
     session.run('mypy', 'src/ExtratorSlides/SlideExtractor.py')
+
+# @nox.session
+
+# def tests(session):
+#     session.run('poetry', 'install', external = True)
+#     session.run('pytest')
