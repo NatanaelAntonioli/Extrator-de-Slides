@@ -12,7 +12,8 @@ def typing(session):
     session.install('mypy')
     session.run('mypy', 'src/ExtratorSlides/SlideExtractor.py')
 
-@nox.session
+@nox.session(python=['3.6', '3.7', '3.8', '3.9'])
+
 
 def tests(session):
     # Nox calls for poetry before anything else.
