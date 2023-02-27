@@ -23,3 +23,24 @@ warn_return_any = true
 warn_unreachable = true
 warn_unused_configs = true
 no_implicit_reexport = true
+
+
+[tool.poetry]
+name = "ExtratorSlides"
+version = "0.1.0"
+description = "O programa busca extrair, a partir de um arquivo de vídeo de uma video aula, os slides desta em formato `.pdf` para que o usuário possa tê-los mesmo que o professor não os mande."
+authors = ["Tamir Einhorn Salem <tamtamireinhorn@gmail.com>"]
+
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+Pillow = "^9.4.0"
+scikit-image = "^0.19.3"
+opencv-python = "^4.7.0"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^6.0.0"
+pytest = "^7.2.1"
+pytest-cov = "^4.0.0"
+mypy = "^1.0.1"
+nox = "^2022.11.21"
