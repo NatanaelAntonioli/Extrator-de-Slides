@@ -12,7 +12,7 @@ def typing(session):
     session.install('mypy')
     session.run('mypy', 'src/ExtratorSlides/SlideExtractor.py')
 
-@nox.session(python=['3.6', '3.7', '3.8', '3.9'])
+@nox.session
 
 
 def tests(session):
